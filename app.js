@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer");
 const { execSync } = require("child_process");
 
+const FIRSTEPISODEINDEX = 49;
+
 (async () => {
   const options = {
     headless: false,
@@ -26,7 +28,7 @@ const { execSync } = require("child_process");
   );
 
   const final = videos.length;
-  for (let i = 16; i < videos.length; i++) {
+  for (let i = FIRSTEPISODEINDEX; i < videos.length; i++) {
     const video = videos[i];
     console.log(`${i}/${final}`);
     const name = video.split("/").pop();
