@@ -25,9 +25,31 @@ const { execSync } = require("child_process");
       .map((el) => el.href)
   );
 
-  for (const video of videos) {
+  const final = videos.length;
+  for (let i = 16; i < videos.length; i++) {
+    const video = videos[i];
+    console.log(`${i}/${final}`);
     const name = video.split("/").pop();
-    execSync(`youtube-dl.exe ${video} -o videos/${name}.%(ext)s`);
+
+    let videoPage = await browser.newPage();
+    await videoPage.goto(video, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await videoPage.waitForSelector(".video-js", { visible: true });
+    const dataAccount = await videoPage.evaluate(() =>
+      [...document.querySelectorAll(".video-js")].map((el) =>
+        el.getAttribute("data-account")
+      )
+    );
+    const videoDataId = await videoPage.evaluate(() =>
+      [...document.querySelectorAll(".video-js")].map((el) =>
+        el.getAttribute("data-video-id")
+      )
+    );
+    execSync(
+      `youtube-dl http://players.brightcove.net/${dataAccount}/default_default/index.html?videoId=${videoDataId} -o videos/${name}.%(ext)s`
+    );
   }
 
   await browser.close();
