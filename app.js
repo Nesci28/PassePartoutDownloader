@@ -27,7 +27,7 @@ const { execSync } = require("child_process");
 
   for (const video of videos) {
     const name = video.split("/").pop();
-    execSync(`youtube-dl.exe ${video} -o ${name}.%(ext)s`);
+    execSync(`youtube-dl.exe ${video} -o videos/${name}.%(ext)s`);
   }
 
   await browser.close();
